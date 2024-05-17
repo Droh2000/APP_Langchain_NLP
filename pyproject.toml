@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "appLangchain"
+version = "0.1.0"
+authors = [{name="Diego Ortega", email="droh2000@gmail.com"}]
+requires-python = ">3.10"
+dependencies = [
+	"streamlit", "langchain", "langchain_openai", "chromadb",
+	"scikit-learn", "unstructured", "pymupdf"
+]
+
+[project.optional-dependencies]
+dev = [
+	"jedi-language-server", "ipython", "wheel"
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]

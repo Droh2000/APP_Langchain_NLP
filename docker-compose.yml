@@ -1,0 +1,48 @@
+# Aqui establecemos como se va a correr la aplicacion
+services: # Dentro declaramos los servicios que va a correr
+  test: # Servicio para la parte de Desarrollo
+    build:
+      context: . # Construimos el dockerfile en el directcorio predente
+      dockerfile: C:\Users\diego\Documents\Python Projects\app_langchain_nlp\images\test\DockerFile
+    container_name: app_langchain_nlp # Nombre del contenedor
+    ports: # Lanze el puerto 8001 de la maquina al contenedor 8000
+      - "8001:8000" # Al tener dos servicios este sera 8001
+    # PARA NO HACER UN BUILD COMPLETO de cero
+    # Volumen (Con esto solo hacemos el build una vez y ya despues dentro del contenedor actualizamos la Aplicacion)
+    # Toma todo el directorio actual y lo ponen en app (La carpeta que creamos en el contenedor)
+    # Con esto solo nos conectamos al contenedor y ejecutar el comando
+    volumes:
+      - "./:/app/"
+    # Para poder conectarnos al contenedor volvemos a abrir el terminal
+    stdin_open: true
+    tty: true
+
+    # Crear una Red
+    # Porque Chroma lanza un servicio HTTP y no queremos que el servicio quede expuesto fuera de la red de docker
+    # queremos que el servicio corra todo dentro de una red interna con docker
+    # Con docker los contenedores puede compartir una misma red y comunicarse entre ellos sin que se expongan al exterior 
+    #networks:
+    #  - net 
+
+    # Cuando lanzemos el contenedor le diremos que nos traiga esta variable de entorno
+    # "env_vars.env" es la variable de entorno que tiene el API Key de OpenAI
+    environment: # Utilizamos la variable de entorno de OpenAI
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+  
+  # Para la aplicacion Final
+  app: # Servicio para mandar a produccion (No es seguro tener la parte de los volumenes)
+    build:
+      context: .
+      dockerfile: C:\Users\diego\Documents\Python Projects\app_langchain_nlp\images\app\Dockerfile
+    container_name: app_langchain_final # Lo nombres no deben estar duplicados
+    ports:
+      - "8000:8000"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+  
+  # Al servicio de Chroma no le dejamos ningun puerto expuesto
+  # porque solo se usara de forma interna dentro de los contenedor (Externa no vamos a cceder)
+
+#networks:
+#  net:
+#    driver: bridge

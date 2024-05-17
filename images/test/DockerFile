@@ -1,0 +1,30 @@
+# Este es para Desarrollo
+# Solo nececita esto poco comando porque los demas se encarga el `volumen`
+
+# Definimos la imagen que vamos a utilizar en este caso un linux que ya contiene Python
+FROM python:latest 
+
+# Creamos una carpeta llamada 'app' desde la raiz
+RUN mkdir /app
+# Especificamos que queremos trabajar sobre esa carpeta
+WORKDIR /app
+# Esto sera como nuestro directorio de trabajo donde cada vez que se lanze el contenedor
+# la carpeta en la que se lanzara ese contenedor es dentro de esta carpeta (La aplicacion)
+
+# Copiamos todo nuestro proyecto './' a la carpeta 'app'
+# Esto lo hacemos para luego que instalemos el proyecto (Sobre el Docker vamos a desplegar solo las dependencias importantes del .toml)
+# COPY ./ /app
+
+# RUN se corre cuando se construye el contenedor (BUILD)
+# Ejecutamos el comando para instalar las dependencias obligatorias
+# RUN pip install .
+
+# Aqui vamos a Hostear la aplicacion
+# Este puerto del contenedor va a estar expuesto para que sea accesible desde afuera
+EXPOSE 8000
+
+# Definimos como vamos a correr el proyecto
+# Cada vez que se lanze el contenedor va a correr esto comandos que se pasan en esta lista
+# En este Ejemplo estamos ejecutando todo un comando de Streamlit
+# CMD se ejecuta cuando se lanza el contenedor
+# CMD ["streamlit", "run", "scripts/chat.py", "--server.port=8000", "--server.address=0.0.0.0"]
